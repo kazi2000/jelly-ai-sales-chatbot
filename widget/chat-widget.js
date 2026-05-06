@@ -67,8 +67,8 @@ sendBtn.addEventListener("click", async () => {
         "Content-Type": "application/json"
       },
       body: JSON.stringify({
-        store_id: "YOUR_STORE_ID",
-        conversation_id: "YOUR_CONVERSATION_ID",
+        store_id: "b9bac8ff-c5e1-4591-bcf9-1b2a9263dbe9",
+        conversation_id: "f777fd19-18c6-48d3-b2c6-80103e49b3af",
         message
       })
     }
