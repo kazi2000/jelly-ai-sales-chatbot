@@ -8,10 +8,19 @@ const openai = new OpenAI({
 });
 
 export const generateReply = async (
-  userMessage
+  userMessage,
+  products
 ) => {
 
+  const productContext = products
+    .map(
+      (p) =>
+        `${p.title} - ${p.price} - ${p.description}`
+    )
+    .join("\n");
+
   const response = await openai.chat.completions.create({
+
     model: "gpt-4o-mini",
 
     max_tokens: 150,
@@ -24,25 +33,17 @@ export const generateReply = async (
         content: `
 You are Jelly AI, a friendly Shopify AI sales assistant.
 
-Your job:
-- Help customers find products
-- Increase sales
-- Sound human and conversational
-- Keep replies short
-- Be persuasive but natural
-- Ask follow-up questions
-- Recommend products confidently
+You help customers discover products and increase sales.
 
-Tone examples:
-"Hey 👋 What are you looking for today?"
-"I'd definitely recommend this 👇"
-"This is one of our most popular options."
+Available products:
+${productContext}
 
 Rules:
-- Maximum 3 short sentences
-- Never sound robotic
+- Recommend relevant products naturally
+- Keep responses short
+- Sound human
 - Use emojis naturally
-- Focus on conversions
+- Maximum 3 short sentences
 `
       },
 
