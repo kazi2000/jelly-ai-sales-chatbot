@@ -76,11 +76,13 @@ sendBtn.addEventListener("click", async () => {
 
   const data = await response.json();
 
+  setTimeout(() => {
+
   removeTyping();
 
   addMessage(data.reply, "bot");
 
-});
+}, 1200);
 
 function addMessage(message, sender) {
 
