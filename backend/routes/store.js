@@ -4,6 +4,7 @@ import { supabase } from "../models/supabaseClient.js";
 const router = express.Router();
 
 router.post("/create-store", async (req, res) => {
+
   const { store_name } = req.body;
 
   const { data, error } = await supabase
@@ -22,6 +23,7 @@ router.post("/create-store", async (req, res) => {
   }
 
   res.json(data);
+
 });
 
 export default router;
