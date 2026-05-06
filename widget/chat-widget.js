@@ -78,11 +78,23 @@ sendBtn.addEventListener("click", async () => {
 
   setTimeout(() => {
 
-  removeTyping();
+    removeTyping();
 
-  addMessage(data.reply, "bot");
+    addMessage(data.reply, "bot");
 
-}, 1200);
+  }, 1200);
+
+});
+
+const inputField = document.getElementById("jelly-chat-input");
+
+inputField.addEventListener("keypress", (e) => {
+
+  if (e.key === "Enter") {
+    sendBtn.click();
+  }
+
+});
 
 function addMessage(message, sender) {
 
