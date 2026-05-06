@@ -93,7 +93,7 @@ router.get("/auth/callback", async (req, res) => {
     const { error } =
       await supabase
         .from("stores")
-        .upsert({
+        .insert({
 
           store_name: shop,
 
