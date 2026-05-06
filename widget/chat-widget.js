@@ -1,3 +1,11 @@
+const style = document.createElement("link");
+
+style.rel = "stylesheet";
+
+style.href =
+  "https://cdn.jsdelivr.net/gh/kazi2000/jelly-ai-sales-chatbot@main/widget/style.css";
+
+document.head.appendChild(style);
 const chatHTML = `
 <div id="jelly-chat-widget">
 
