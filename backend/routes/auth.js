@@ -6,7 +6,7 @@ from "../models/supabaseClient.js";
 const router = express.Router();
 
 /* =========================================
-   STEP 1 — REDIRECT TO SHOPIFY INSTALL
+   AUTH ROUTE
 ========================================= */
 
 router.get("/auth", async (req, res) => {
@@ -36,7 +36,7 @@ router.get("/auth", async (req, res) => {
 });
 
 /* =========================================
-   STEP 2 — SHOPIFY CALLBACK
+   CALLBACK
 ========================================= */
 
 router.get("/auth/callback", async (req, res) => {
@@ -45,9 +45,7 @@ router.get("/auth/callback", async (req, res) => {
 
   try {
 
-    /* =====================================
-       EXCHANGE CODE FOR ACCESS TOKEN
-    ===================================== */
+    console.log("SHOP:", shop);
 
     const response = await fetch(
 
@@ -84,37 +82,34 @@ router.get("/auth/callback", async (req, res) => {
       await response.json();
 
     console.log(
-      "ACCESS TOKEN:",
-      data.access_token
+      "ACCESS TOKEN RESPONSE:",
+      data
     );
 
     /* =====================================
-       SAVE STORE IN SUPABASE
+       SAVE STORE
     ===================================== */
 
-    await supabase
-      .from("stores")
-      .upsert({
+    const { error } =
+      await supabase
+        .from("stores")
+        .upsert({
 
-        store_name: shop,
+          store_name: shop,
 
-        access_token:
-          data.access_token,
+          access_token:
+            data.access_token,
 
-        plan: "starter",
+          plan: "starter",
 
-        messages_used: 0
+          messages_used: 0
 
-      });
+        });
 
     console.log(
-      "STORE SAVED:",
-      shop
+      "SUPABASE ERROR:",
+      error
     );
-
-    /* =====================================
-       SUCCESS RESPONSE
-    ===================================== */
 
     res.send(
       "Jelly AI Installed Successfully 🚀"
@@ -122,7 +117,10 @@ router.get("/auth/callback", async (req, res) => {
 
   } catch (error) {
 
-    console.error(error);
+    console.error(
+      "AUTH ERROR:",
+      error
+    );
 
     res
       .status(500)
