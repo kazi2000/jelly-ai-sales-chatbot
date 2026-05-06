@@ -9,15 +9,37 @@ router.get("/test-script", async (req, res) => {
 
   try {
 
-    const { data: store }
-      = await supabase
+    /* =====================================
+       GET STORE
+    ===================================== */
+
+    const result =
+      await supabase
         .from("stores")
-        .select("*")
-        .eq(
-          "store_name",
-          "ai-sales-agent-4fl5bdta.myshopify.com"
-        )
-        .single();
+        .select("*");
+
+    console.log(
+      "SUPABASE RESULT:",
+      result
+    );
+
+    const store =
+      result.data?.[0];
+
+    if (!store) {
+
+      return res.status(404).json({
+
+        error:
+          "No store found"
+
+      });
+
+    }
+
+    /* =====================================
+       CREATE SCRIPT TAG
+    ===================================== */
 
     const response = await fetch(
 
@@ -57,6 +79,11 @@ router.get("/test-script", async (req, res) => {
     const data =
       await response.json();
 
+    console.log(
+      "SCRIPT TAG RESPONSE:",
+      data
+    );
+
     res.json(data);
 
   } catch (error) {
@@ -64,7 +91,10 @@ router.get("/test-script", async (req, res) => {
     console.error(error);
 
     res.status(500).json({
-      error: error.message
+
+      error:
+        error.message
+
     });
 
   }
