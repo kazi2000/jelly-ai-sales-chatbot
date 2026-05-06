@@ -3,9 +3,6 @@ import express from "express";
 import { supabase }
 from "../models/supabaseClient.js";
 
-import { createScriptTag }
-from "../services/scriptTagService.js";
-
 const router = express.Router();
 
 /* =========================================
@@ -48,9 +45,9 @@ router.get("/auth/callback", async (req, res) => {
 
   try {
 
-    /* =========================================
+    /* =====================================
        EXCHANGE CODE FOR ACCESS TOKEN
-    ========================================= */
+    ===================================== */
 
     const response = await fetch(
 
@@ -86,12 +83,14 @@ router.get("/auth/callback", async (req, res) => {
     const data =
       await response.json();
 
-    const accessToken =
-      data.access_token;
+    console.log(
+      "ACCESS TOKEN:",
+      data.access_token
+    );
 
-    /* =========================================
+    /* =====================================
        SAVE STORE IN SUPABASE
-    ========================================= */
+    ===================================== */
 
     await supabase
       .from("stores")
@@ -99,40 +98,23 @@ router.get("/auth/callback", async (req, res) => {
 
         store_name: shop,
 
-        access_token: accessToken,
+        access_token:
+          data.access_token,
 
-        plan_type: "free",
+        plan: "starter",
 
-        messages_used: 0,
-
-        plan_limit: 100,
-
-        billing_cycle_start:
-          new Date()
+        messages_used: 0
 
       });
 
     console.log(
-      "Store Installed:",
+      "STORE SAVED:",
       shop
     );
 
-    /* =========================================
-       CREATE SHOPIFY SCRIPT TAG
-    ========================================= */
-
-    await createScriptTag(
-      shop,
-      accessToken
-    );
-
-    console.log(
-      "Widget Installed Successfully"
-    );
-
-    /* =========================================
+    /* =====================================
        SUCCESS RESPONSE
-    ========================================= */
+    ===================================== */
 
     res.send(
       "Jelly AI Installed Successfully 🚀"
