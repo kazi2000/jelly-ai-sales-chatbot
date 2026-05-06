@@ -1,60 +1,34 @@
-export const createScriptTag = async (
-  shop,
-  accessToken
-) => {
+const response = await fetch(
 
-  try {
+  `https://${store.store_name}/admin/api/2025-01/script_tags.json`,
 
-    const response = await fetch(
+  {
 
-      `https://${shop}/admin/api/2024-01/script_tags.json`,
+    method: "POST",
 
-      {
+    headers: {
 
-        method: "POST",
+      "Content-Type":
+        "application/json",
 
-        headers: {
+      "X-Shopify-Access-Token":
+        store.access_token
 
-          "Content-Type":
-            "application/json",
+    },
 
-          "X-Shopify-Access-Token":
-            accessToken
+    body: JSON.stringify({
 
-        },
+      script_tag: {
 
-        body: JSON.stringify({
+        event: "onload",
 
-          script_tag: {
-
-            event: "onload",
-
-            src:
-              "https://cdn.jsdelivr.net/gh/kazi2000/jelly-ai-sales-chatbot@main/widget/chat-widget.js"
-
-          }
-
-        })
+        src:
+          "https://cdn.jsdelivr.net/gh/kazi2000/jelly-ai-sales-chatbot@main/widget/chat-widget.js"
 
       }
 
-    );
-
-    const data =
-      await response.json();
-
-    console.log(
-      "SCRIPT TAG RESPONSE:",
-      data
-    );
-
-  } catch (error) {
-
-    console.error(
-      "SCRIPT TAG ERROR:",
-      error
-    );
+    })
 
   }
 
-};
+);
