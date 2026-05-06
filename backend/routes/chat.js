@@ -3,6 +3,7 @@ import { supabase } from "../models/supabaseClient.js";
 import { generateReply } from "../services/openaiService.js";
 import { checkUsageLimit } from "../utils/usageCheck.js";
 import { resetBillingIfNeeded } from "../utils/resetBilling.js";
+import { getProducts } from "../services/shopifyService.js";
 
 const router = express.Router();
 
