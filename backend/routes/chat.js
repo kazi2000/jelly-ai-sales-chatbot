@@ -8,64 +8,93 @@ import { getProducts } from "../services/shopifyService.js";
 const router = express.Router();
 
 router.post("/chat", async (req, res) => {
-  const { store_id, message, conversation_id } = req.body;
+
+  const {
+    store_id,
+    message,
+    conversation_id
+  } = req.body;
 
   try {
-    // Get store
-    const { data: store } = await supabase
+
+    // Get Store
+    const { data: store, error: storeError } = await supabase
       .from("stores")
       .select("*")
       .eq("id", store_id)
       .single();
 
-    // Reset billing if needed
+    // Store not found
+    if (!store || storeError) {
+      return res.status(404).json({
+        reply: "Store not found"
+      });
+    }
+
+    // Reset Billing
     await resetBillingIfNeeded(store, supabase);
 
-    // Check usage limit
+    // Usage Limit Check
     const allowed = await checkUsageLimit(store);
 
     if (!allowed) {
       return res.json({
-        reply: "You have reached your usage limit. Please upgrade your plan."
+        reply:
+          "You have reached your usage limit. Please upgrade your plan."
       });
     }
 
-    // Save user message
-    await supabase.from("messages").insert({
-      conversation_id,
-      sender: "user",
-      message
-    });
+    // Save User Message
+    await supabase
+      .from("messages")
+      .insert({
+        conversation_id,
+        sender: "user",
+        message
+      });
 
-    // Generate AI response
+    // Get Products
     const products = await getProducts();
 
-const aiReply = await generateReply(
-  message,
-  products
-);
+    // AI Reply
+    const aiReply = await generateReply(
+      message,
+      products
+    );
 
-    // Save AI message
-    await supabase.from("messages").insert({
-      conversation_id,
-      sender: "ai",
-      message: aiReply
-    });
+    // Save AI Message
+    await supabase
+      .from("messages")
+      .insert({
+        conversation_id,
+        sender: "ai",
+        message: aiReply
+      });
 
-    // Increment usage
+    // Increment Usage
     await supabase
       .from("stores")
       .update({
-        messages_used: store.messages_used + 1
+        messages_used:
+          store.messages_used + 1
       })
       .eq("id", store_id);
 
-    res.json({ reply: aiReply });
+    // Send Response
+    res.json({
+      reply: aiReply
+    });
 
   } catch (error) {
+
     console.error(error);
-    res.status(500).json({ error: "Something went wrong" });
+
+    res.status(500).json({
+      reply: "Something went wrong"
+    });
+
   }
+
 });
 
 export default router;
