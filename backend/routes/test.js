@@ -1,104 +1,34 @@
-import express from "express";
+const response = await fetch(
 
-import { supabase }
-from "../models/supabaseClient.js";
+  `https://${store.store_name}/admin/api/2025-01/script_tags.json`,
 
-const router = express.Router();
+  {
 
-router.get("/test-script", async (req, res) => {
+    method: "POST",
 
-  try {
+    headers: {
 
-    /* =====================================
-       GET STORE
-    ===================================== */
+      "Content-Type":
+        "application/json",
 
-    const result =
-      await supabase
-        .from("stores")
-        .select("*");
+      "X-Shopify-Access-Token":
+        store.access_token
 
-    console.log(
-      "SUPABASE RESULT:",
-      result
-    );
+    },
 
-    const store =
-      result.data?.[0];
+    body: JSON.stringify({
 
-    if (!store) {
+      script_tag: {
 
-      return res.status(404).json({
+        event: "onload",
 
-        error:
-          "No store found"
-
-      });
-
-    }
-
-    /* =====================================
-       CREATE SCRIPT TAG
-    ===================================== */
-
-    const response = await fetch(
-
-      `https://${store.store_name}/admin/api/2024-01/script_tags.json`,
-
-      {
-
-        method: "POST",
-
-        headers: {
-
-          "Content-Type":
-            "application/json",
-
-          "X-Shopify-Access-Token":
-            store.access_token
-
-        },
-
-        body: JSON.stringify({
-
-          script_tag: {
-
-            event: "onload",
-
-            src:
-              "https://cdn.jsdelivr.net/gh/kazi2000/jelly-ai-sales-chatbot@main/widget/chat-widget.js"
-
-          }
-
-        })
+        src:
+          "https://cdn.jsdelivr.net/gh/kazi2000/jelly-ai-sales-chatbot@main/widget/chat-widget.js"
 
       }
 
-    );
-
-    const data =
-      await response.json();
-
-    console.log(
-      "SCRIPT TAG RESPONSE:",
-      data
-    );
-
-    res.json(data);
-
-  } catch (error) {
-
-    console.error(error);
-
-    res.status(500).json({
-
-      error:
-        error.message
-
-    });
+    })
 
   }
 
-});
-
-export default router;
+);
