@@ -7,18 +7,23 @@ import planRoutes from "./routes/plan.js";
 import usageRoutes from "./routes/usage.js";
 import storeRoutes from "./routes/store.js";
 import authRoutes from "./routes/auth.js";
+import testRoutes from "./routes/test.js";
 
 dotenv.config();
 
 const app = express();
 
-// Enable CORS
+/* =========================================
+   MIDDLEWARE
+========================================= */
+
 app.use(cors());
 
-// Parse JSON
 app.use(express.json());
 
-/* API ROUTES */
+/* =========================================
+   API ROUTES
+========================================= */
 
 app.use("/api", chatRoutes);
 
@@ -28,11 +33,21 @@ app.use("/api/usage", usageRoutes);
 
 app.use("/api", storeRoutes);
 
-/* SHOPIFY AUTH ROUTES */
+/* =========================================
+   SHOPIFY AUTH ROUTES
+========================================= */
 
 app.use("/", authRoutes);
 
-/* HEALTH CHECK */
+/* =========================================
+   TEST ROUTES
+========================================= */
+
+app.use("/", testRoutes);
+
+/* =========================================
+   HEALTH CHECK
+========================================= */
 
 app.get("/", (req, res) => {
 
@@ -42,7 +57,9 @@ app.get("/", (req, res) => {
 
 });
 
-/* START SERVER */
+/* =========================================
+   START SERVER
+========================================= */
 
 app.listen(process.env.PORT, () => {
 
