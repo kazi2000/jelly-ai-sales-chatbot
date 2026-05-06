@@ -38,7 +38,12 @@ router.post("/chat", async (req, res) => {
     });
 
     // Generate AI response
-    const aiReply = await generateReply(message);
+    const products = await getProducts();
+
+const aiReply = await generateReply(
+  message,
+  products
+);
 
     // Save AI message
     await supabase.from("messages").insert({
