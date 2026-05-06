@@ -86,3 +86,16 @@
   padding: 15px;
   cursor: pointer;
 }
+
+/* MOBILE RESPONSIVE */
+
+@media (max-width: 600px) {
+
+  #jelly-chat-box {
+    width: 95%;
+    right: 2.5%;
+    height: 80vh;
+    bottom: 80px;
+  }
+
+}
